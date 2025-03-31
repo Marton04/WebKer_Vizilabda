@@ -1,0 +1,45 @@
+<mat-toolbar color="primary">
+    <span>Bajnokság Információ</span>
+</mat-toolbar>
+
+<div class="container" style="margin: 20px;">
+    <h2>Válassz bajnokságot!</h2>
+    <mat-list>
+        <mat-list-item *ngFor="let championship of championships" (click)="selectChampionship(championship)" style="cursor: pointer;">
+            <h3 matLine>{{ championship.name }}</h3>
+        </mat-list-item>
+    </mat-list>
+
+    <div *ngIf="selectedChampionship">
+        <mat-card style="margin-top: 20px;">
+            <mat-card-title>{{ selectedChampionship.name }}</mat-card-title>
+            <mat-card-content>
+                
+                <h4>Csapatok</h4>
+                <table mat-table [dataSource]="selectedChampionship.teams | pontokPipe: 'points'" class="mat-elevation-z8">
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Név </th>
+                        <td mat-cell *matCellDef="let team"> {{ team.name }} </td>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="points">
+                        <th mat-header-cell *matHeaderCellDef> Pontok </th>
+                        <td mat-cell *matCellDef="let team"> {{ team.points }} </td>
+                    </ng-container>
+                    
+                    <tr mat-header-row *matHeaderRowDef="['name', 'points']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['name', 'points'];"></tr>
+                </table>
+
+                <h4>Mérkőzések</h4>
+                <mat-list>
+                    <mat-list-item *ngFor="let match of selectedChampionship.matches">
+                        <mat-icon matListIcon>sports_score</mat-icon>
+                        <h3 matLine>{{ match.team1 }} vs. {{ match.team2 }}</h3>
+                        <p matLine>Dátum: {{ match.date }}</p>
+                    </mat-list-item>
+                </mat-list>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
