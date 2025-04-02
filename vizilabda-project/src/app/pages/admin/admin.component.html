@@ -1,0 +1,13 @@
+<mat-card class="admin-container">
+    <mat-tab-group [(selectedIndex)]="selectedTab">
+      <mat-tab label="Új bajnokság létrehozása">
+        <app-new-championship></app-new-championship>
+      </mat-tab>
+      <mat-tab label="Eredmények megadása">
+        <app-enter-results></app-enter-results>
+      </mat-tab>
+      <mat-tab label="Csapat módosítás">
+        <app-edit-team></app-edit-team>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>

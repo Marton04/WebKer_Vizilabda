@@ -23,8 +23,20 @@ import { MenuComponent } from './shared/menu/menu.component';
 })
 export class AppComponent {
   title = 'vizilabda-project';
+  isLoggedIn = false;
+  ngOnInit(): void {
+    this.checkLoginStatus();
+  }
 
+  checkLoginStatus(): void {
+    this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  }
   onToggleSidenav(sidenav: MatSidenav){
     sidenav.toggle();
+  }
+  logout(): void {
+    localStorage.setItem('isLoggedIn', 'false');
+    this.isLoggedIn = false;
+    window.location.href = '/home';
   }
 }

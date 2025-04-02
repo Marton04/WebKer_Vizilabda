@@ -19,6 +19,7 @@ import { CommonModule } from '@angular/common';
 })
 export class MenuComponent {
   @Input() sidenav!: MatSidenav;
+  @Input() isLoggedIn: boolean = false;
   @Output() logoutEvent = new EventEmitter<void>();
 
   constructor() {
