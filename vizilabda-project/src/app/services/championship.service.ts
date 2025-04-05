@@ -31,7 +31,9 @@ export class ChampionshipService {
     }
   ];
 
-  constructor() {}
+  constructor() {
+    this.loadFromLocalStorage();
+  }
 
   getChampionships(): Championship[] {
     return this.championships;
@@ -40,12 +42,55 @@ export class ChampionshipService {
   getTeams(): Team[] {
     return this.teams;
   }
+  addTeam(team: Team): void {
+    const newId = Math.max(...this.teams.map(t => t.id), 0) + 1;
+    const newTeam = { ...team, id: newId };
+    this.teams.push(newTeam);
+    this.saveTeamsToLocalStorage();
+  }
 
+  addChampionship(championship: Championship): void {
+    this.championships.push(championship);
+    this.saveChampionshipsToLocalStorage();
+  }
+  
   updateTeam(updatedTeam: Team): void {
     const team = this.teams.find(t => t.id === updatedTeam.id);
     if (team) {
       team.name = updatedTeam.name;
       team.points = updatedTeam.points;
+      this.saveTeamsToLocalStorage();
+      this.saveChampionshipsToLocalStorage();
+    }
+  }
+  private saveChampionshipsToLocalStorage(): void {
+    localStorage.setItem('championships', JSON.stringify(this.championships));
+  }
+  
+  private saveTeamsToLocalStorage(): void {
+    localStorage.setItem('teams', JSON.stringify(this.teams));
+  }
+  
+  private loadFromLocalStorage(): void {
+    const storedChamps = localStorage.getItem('championships');
+    const storedTeams = localStorage.getItem('teams');
+  
+    if (storedTeams) {
+      this.teams = JSON.parse(storedTeams);
+    }
+  
+    if (storedChamps) {
+      const champs: Championship[] = JSON.parse(storedChamps);
+      // Mivel team-ek referenciák, újra be kell őket állítani:
+      this.championships = champs.map(ch => ({
+        ...ch,
+        teams: ch.teams.map(t => this.teams.find(team => team.id === t.id)!).filter(Boolean),
+        matches: ch.matches.map(m => ({
+          ...m,
+          team1: this.teams.find(t => t.id === m.team1.id)!, // feltételezve, hogy Match.team1 és team2 is Team típusú
+          team2: this.teams.find(t => t.id === m.team2.id)!
+        }))
+      }));
     }
   }
 }
