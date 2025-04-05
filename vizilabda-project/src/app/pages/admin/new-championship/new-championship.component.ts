@@ -8,10 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -25,19 +23,14 @@ import { CommonModule } from '@angular/common';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule,
     MatDatepickerModule,
-    MatNativeDateModule,
-    MatSelectModule
+    MatNativeDateModule
   ],
   templateUrl: './new-championship.component.html',
   styleUrl: './new-championship.component.scss'
 })
 export class NewChampionshipComponent {
   championshipForm: FormGroup;
-
-  allTeams: Team[] = [];
-  selectedTeamIds: number[] = [];
   newTeams: Team[] = [];
   startDate: Date | null = null;
 
@@ -49,8 +42,6 @@ export class NewChampionshipComponent {
       name: ['', Validators.required],
       startDate: ['', Validators.required]
     });
-
-    this.allTeams = this.championshipService.getTeams();
   }
 
   addNewTeam() {
@@ -70,7 +61,6 @@ export class NewChampionshipComponent {
     const name = this.championshipForm.value.name;
     this.startDate = this.championshipForm.value.startDate;
 
-    // Ellenőrzés: új csapatnevek ne legyenek üresek
     const invalidTeam = this.newTeams.find(
       team => !team.name || team.name.trim().length === 0
     );
@@ -80,28 +70,22 @@ export class NewChampionshipComponent {
       return;
     }
 
-    // Meglévő csapatok lekérése
-    const existingSelectedTeams = this.allTeams.filter(team =>
-      this.selectedTeamIds.includes(team.id)
-    );
-
-    // Új csapatokat hozzáadjuk a szolgáltatáshoz
+    // Új csapatok hozzáadása a szolgáltatáshoz
     for (let team of this.newTeams) {
       this.championshipService.addTeam(team);
     }
 
     const newChampionship: Championship = {
       name,
-      teams: [...existingSelectedTeams, ...this.newTeams],
+      teams: [...this.newTeams],
       matches: []
     };
 
     this.championshipService.addChampionship(newChampionship);
     alert('Bajnokság létrehozva!');
 
-    // Űrlap és állapot alaphelyzetbe
+    // Alaphelyzetbe állítás
     this.championshipForm.reset();
-    this.selectedTeamIds = [];
     this.newTeams = [];
     this.startDate = null;
   }

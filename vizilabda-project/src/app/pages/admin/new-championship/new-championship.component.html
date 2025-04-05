@@ -15,31 +15,19 @@
       </mat-form-field>
     </form>
 
-    <div class="team-section" style="display: flex; gap: 20px; margin-top: 20px;">
-      <!-- Meglévő csapatok -->
-      <div style="flex: 1;">
-        <h3>Meglévő csapatok</h3>
-        <mat-selection-list [(ngModel)]="selectedTeamIds">
-          <mat-list-option *ngFor="let team of allTeams" [value]="team.id">
-            {{ team.name }}
-          </mat-list-option>
-        </mat-selection-list>
+    <!-- Új csapatok -->
+    <div style="margin-top: 20px;">
+      <h3>Új csapatok</h3>
+      <div *ngFor="let team of newTeams; let i = index" style="display: flex; align-items: center; margin-bottom: 10px;">
+        <mat-form-field appearance="fill" style="flex: 1;">
+          <mat-label>Csapat neve</mat-label>
+          <input matInput [(ngModel)]="team.name" name="newTeamName{{i}}">
+        </mat-form-field>
+        <button mat-icon-button color="warn" (click)="removeNewTeam(i)" style="margin-left: 5px;">
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
-
-      <!-- Új csapatok -->
-      <div style="flex: 1;">
-        <h3>Új csapatok</h3>
-        <div *ngFor="let team of newTeams; let i = index" style="display: flex; align-items: center; margin-bottom: 10px;">
-          <mat-form-field appearance="fill" style="flex: 1;">
-            <mat-label>Csapat neve</mat-label>
-            <input matInput [(ngModel)]="team.name" name="newTeamName{{i}}">
-          </mat-form-field>
-          <button mat-icon-button color="warn" (click)="removeNewTeam(i)" style="margin-left: 5px;">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-        <button mat-stroked-button color="primary" (click)="addNewTeam()">Új csapat hozzáadása</button>
-      </div>
+      <button mat-stroked-button color="primary" (click)="addNewTeam()">Új csapat hozzáadása</button>
     </div>
 
     <div style="margin-top: 20px;">
