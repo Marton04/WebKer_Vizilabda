@@ -1,1 +1,18 @@
-<p>home works!</p>
+<div class="home-hero">
+    <div class="hero-content">
+      <h1>Üdvözlünk a Vízilabda Bajnokságok információs oldalon!</h1>
+      <h3>Fedezd fel az aktuális bajnokságokat, nézd meg az eredményeket, vagy jelentkezz be az admin felületre!</h3>
+      <div class="buttons">
+        <button mat-raised-button color="accent" routerLink="/bajnoksag">Bajnokságok megtekintése</button>
+        @if (isLoggedIn) {
+          <button mat-raised-button color="primary" routerLink="/admin">Admin</button>
+        }
+        
+        @if (!isLoggedIn) {
+          <button mat-raised-button color="primary" routerLink="/login">Bejelentkezés</button>
+        }
+        
+      </div>
+    </div>
+  </div>
+  

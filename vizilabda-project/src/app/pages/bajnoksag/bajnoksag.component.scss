@@ -1,0 +1,39 @@
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  
+  .toolbar {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .championship-list {
+    margin-bottom: 30px;
+  }
+  
+  .champ-item {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .champ-item:hover {
+    background-color: #eeeeee;
+  }
+  
+  .selected-section mat-card {
+    padding: 16px;
+  }
+  
+  .matchday-select {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .match-table-card,
+  .team-table-card {
+    margin-top: 20px;
+    padding: 16px;
+  }
+  
