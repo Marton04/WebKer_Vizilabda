@@ -1,1 +1,45 @@
-<p>enter-results works!</p>
+<mat-card>
+    <mat-card-title>Eredmények megadása</mat-card-title>
+  
+    <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+      <mat-label>Bajnokság kiválasztása</mat-label>
+      <mat-select [(ngModel)]="selectedChampionship" (selectionChange)="selectChampionship($event.value)">
+        <mat-option *ngFor="let champ of championships" [value]="champ">
+          {{ champ.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <div *ngIf="selectedChampionship">
+      <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+        <mat-label>Meccsnap kiválasztása</mat-label>
+        <mat-select [(ngModel)]="selectedMatchday" (selectionChange)="onMatchdayChange($event.value)">
+          <mat-option *ngFor="let md of selectedChampionship.matchdays" [value]="md">
+            {{ md.date | date:'longDate' }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  
+    <div *ngIf="selectedMatchday">
+        <div *ngFor="let match of displayedMatches" class="match-row">
+          <div class="teams">
+            <span class="team-name">{{ match.team1.name }}</span>
+            <span class="vs">vs</span>
+            <span class="team-name">{{ match.team2.name }}</span>
+          </div>
+      
+          <div class="scores">
+            <mat-form-field appearance="outline" class="score-input">
+              <input matInput type="number" [(ngModel)]="match.score1" placeholder="Hazai">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="score-input">
+              <input matInput type="number" [(ngModel)]="match.score2" placeholder="Vendég">
+            </mat-form-field>
+          </div>
+        </div>
+
+  <button mat-raised-button color="primary" style="margin-top: 20px;" (click)="saveResults()">
+    Eredmények mentése
+  </button>
+</div>

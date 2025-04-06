@@ -84,7 +84,10 @@ export class ChampionshipService {
       this.saveChampionshipsToLocalStorage();
     }
   }
-
+  saveAll(): void {
+    this.saveChampionshipsToLocalStorage();
+    this.saveTeamsToLocalStorage();
+  }
   private saveChampionshipsToLocalStorage(): void {
     localStorage.setItem('championships', JSON.stringify(this.championships));
   }

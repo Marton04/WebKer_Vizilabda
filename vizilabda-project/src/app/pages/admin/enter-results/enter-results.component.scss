@@ -1,0 +1,36 @@
+.match-row {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    background-color: #fafafa;
+  }
+  
+  .teams {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  .team-name {
+    margin: 0 8px;
+  }
+  
+  .vs {
+    font-weight: bold;
+    color: #888;
+  }
+  
+  .scores {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .score-input {
+    width: 100px;
+  }
+  
