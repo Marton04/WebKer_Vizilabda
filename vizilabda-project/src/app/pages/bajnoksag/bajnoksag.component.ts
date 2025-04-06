@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { PontokPipePipe } from '../../shared/pontok.pipe.pipe';
 import { SortByDatePipe } from '../../shared/sort-by-date.pipe';
 import { ChampionshipService } from '../../services/championship.service';
-import { Championship, Matchday } from '../../models/championship.model';
+import { Championship, Matchday, Team } from '../../models/championship.model';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -35,6 +35,7 @@ export class BajnoksagComponent implements OnInit {
   selectedChampionship: Championship | null = null;
   selectedMatchday: Matchday | null = null;
   displayedColumns: string[] = ['team1', 'result', 'team2', 'date'];
+  teamColumns: string[] = ['position', 'name', 'points'];
 
   constructor(private championshipService: ChampionshipService) {}
 
@@ -44,7 +45,6 @@ export class BajnoksagComponent implements OnInit {
 
   selectChampionship(championship: Championship): void {
     this.selectedChampionship = championship;
-    // Ha van meccsnap, alapértelmezetten az elsőt választjuk ki.
     if (championship.matchdays && championship.matchdays.length > 0) {
       this.selectedMatchday = championship.matchdays[0];
     } else {
@@ -56,8 +56,17 @@ export class BajnoksagComponent implements OnInit {
     this.selectedMatchday = matchday;
   }
 
-  // Getter a kijelzett mérkőzésekhez
   get displayedMatches() {
     return this.selectedMatchday ? this.selectedMatchday.matches : [];
+  }
+
+  // Csapatok rendezése pontok alapján
+  getSortedTeams(): Team[] {
+    if (this.selectedChampionship) {
+      return this.selectedChampionship.teams
+        .slice()
+        .sort((a, b) => b.points - a.points); // Pontok szerint csökkenő sorrend
+    }
+    return [];
   }
 }

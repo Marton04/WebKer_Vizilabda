@@ -57,45 +57,40 @@ export class NewChampionshipComponent {
       alert('Kérlek, töltsd ki a bajnokság nevét és a kezdődátumot!');
       return;
     }
-
+  
     const name = this.championshipForm.value.name;
     this.startDate = this.championshipForm.value.startDate;
-
+  
     const invalidTeam = this.newTeams.find(
       team => !team.name || team.name.trim().length === 0
     );
-
+  
     if (invalidTeam) {
       alert('Kérlek, adj nevet minden új csapatnak!');
       return;
     }
-    if(this.newTeams.length%2!=0){
+    if(this.newTeams.length % 2 !== 0) {
       alert('Kérlek páros számú csapatot adj meg');
       return;
     }
-    // Új csapatok hozzáadása a szolgáltatáshoz
-    for (let team of this.newTeams) {
-      this.championshipService.addTeam(team);
-    }
-
+  
     // Generáljuk a mérkőzésrendet a megadott kezdődátumtól (feltételezzük, hogy a csapatok száma páros!)
     const matchdays: Matchday[] = this.generateDoubleRoundRobinSchedule([...this.newTeams], this.startDate!);
-
+  
     const newChampionship: Championship = {
       name,
       teams: [...this.newTeams],
       matchdays
     };
-
+  
     this.championshipService.addChampionship(newChampionship);
     alert('Bajnokság létrehozva!');
-
+  
     // Alaphelyzetbe állítás
     this.championshipForm.reset();
     this.newTeams = [];
     this.startDate = null;
   }
-
   /**
    * Létrehoz egy dupla fordulós mérkőzésrendet úgy, hogy minden csapat otthon és idegenben is játszik.
    * A kezdődátumtól minden fordulóhoz hozzáadunk egy 7 napos eltolást.
