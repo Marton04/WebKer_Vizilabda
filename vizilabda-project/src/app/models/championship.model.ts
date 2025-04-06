@@ -10,6 +10,7 @@ export interface Match {
   date: string;
   score1: number | null;
   score2: number | null;
+  resultSaved?: boolean; 
 }
 
 export interface Matchday {

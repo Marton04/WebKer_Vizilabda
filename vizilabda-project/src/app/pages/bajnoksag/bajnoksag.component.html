@@ -62,7 +62,7 @@
       <!-- Csapatok táblázata -->
       <mat-card style="margin-top: 20px;">
         <mat-card-title>Csapatok</mat-card-title>
-        <mat-table [dataSource]="getSortedTeams()" style="width: 100%; margin-top: 20px;">
+        <mat-table [dataSource]="selectedChampionship.teams | pontokPipe:'points'" style="width: 100%; margin-top: 20px;">
           <ng-container matColumnDef="position">
             <mat-header-cell *matHeaderCellDef>Helyezés</mat-header-cell>
             <mat-cell *matCellDef="let team; let i = index">{{ i + 1 }}</mat-cell>

@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-bajnoksag',
   standalone: true,
   imports: [
+    PontokPipePipe,
     FormsModule,
     MatToolbarModule,
     MatListModule,
@@ -58,15 +59,5 @@ export class BajnoksagComponent implements OnInit {
 
   get displayedMatches() {
     return this.selectedMatchday ? this.selectedMatchday.matches : [];
-  }
-
-  // Csapatok rendezése pontok alapján
-  getSortedTeams(): Team[] {
-    if (this.selectedChampionship) {
-      return this.selectedChampionship.teams
-        .slice()
-        .sort((a, b) => b.points - a.points); // Pontok szerint csökkenő sorrend
-    }
-    return [];
   }
 }
