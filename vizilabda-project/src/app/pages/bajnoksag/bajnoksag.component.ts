@@ -10,29 +10,30 @@ import { MatSelectModule } from '@angular/material/select';
 import { PontokPipePipe } from '../../shared/pontok.pipe.pipe';
 import { SortByDatePipe } from '../../shared/sort-by-date.pipe';
 import { ChampionshipService } from '../../services/championship.service';
-import { Championship, Team } from '../../models/championship.model';
+import { Championship, Matchday } from '../../models/championship.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-bajnoksag',
   standalone: true,
   imports: [
+    FormsModule,
     MatToolbarModule,
     MatListModule,
     MatIconModule,
     MatCardModule,
     CommonModule,
-    PontokPipePipe,
     MatTableModule,
     MatFormFieldModule,
-    MatSelectModule,
-    SortByDatePipe
+    MatSelectModule
   ],
   templateUrl: './bajnoksag.component.html',
-  styleUrl: './bajnoksag.component.scss'
+  styleUrls: ['./bajnoksag.component.scss']
 })
 export class BajnoksagComponent implements OnInit {
   championships: Championship[] = [];
   selectedChampionship: Championship | null = null;
+  selectedMatchday: Matchday | null = null;
   displayedColumns: string[] = ['team1', 'result', 'team2', 'date'];
 
   constructor(private championshipService: ChampionshipService) {}
@@ -41,7 +42,22 @@ export class BajnoksagComponent implements OnInit {
     this.championships = this.championshipService.getChampionships();
   }
 
-  selectChampionship(championship: Championship) {
+  selectChampionship(championship: Championship): void {
     this.selectedChampionship = championship;
+    // Ha van meccsnap, alapértelmezetten az elsőt választjuk ki.
+    if (championship.matchdays && championship.matchdays.length > 0) {
+      this.selectedMatchday = championship.matchdays[0];
+    } else {
+      this.selectedMatchday = null;
+    }
+  }
+
+  onMatchdayChange(matchday: Matchday): void {
+    this.selectedMatchday = matchday;
+  }
+
+  // Getter a kijelzett mérkőzésekhez
+  get displayedMatches() {
+    return this.selectedMatchday ? this.selectedMatchday.matches : [];
   }
 }

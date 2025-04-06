@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Championship, Team } from '../models/championship.model';
+import { Championship, Team, Match, Matchday } from '../models/championship.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,17 +16,37 @@ export class ChampionshipService {
     {
       name: 'Vízilabda Bajnokság 2025',
       teams: [this.teams[0], this.teams[1]],
-      matches: [
-        { team1: this.teams[2], team2: this.teams[3], date: '2025-07-15', score1: null, score2: null },
-        { team1: this.teams[0], team2: this.teams[1], date: '2025-06-10', score1: null, score2: null }
+      matchdays: [
+        {
+          date: '2025-07-15',
+          matches: [
+            { team1: this.teams[2], team2: this.teams[3], date: '2025-07-15', score1: null, score2: null }
+          ]
+        },
+        {
+          date: '2025-06-10',
+          matches: [
+            { team1: this.teams[0], team2: this.teams[1], date: '2025-06-10', score1: null, score2: null }
+          ]
+        }
       ]
     },
     {
       name: 'Vízilabda Kupa 2025',
       teams: [this.teams[2], this.teams[3]],
-      matches: [
-        { team1: this.teams[2], team2: this.teams[3], date: '2025-07-15', score1: null, score2: null },
-        { team1: this.teams[0], team2: this.teams[1], date: '2025-06-10', score1: null, score2: null }
+      matchdays: [
+        {
+          date: '2025-07-15',
+          matches: [
+            { team1: this.teams[2], team2: this.teams[3], date: '2025-07-15', score1: null, score2: null }
+          ]
+        },
+        {
+          date: '2025-06-10',
+          matches: [
+            { team1: this.teams[0], team2: this.teams[1], date: '2025-06-10', score1: null, score2: null }
+          ]
+        }
       ]
     }
   ];
@@ -42,6 +62,7 @@ export class ChampionshipService {
   getTeams(): Team[] {
     return this.teams;
   }
+
   addTeam(team: Team): void {
     const newId = Math.max(...this.teams.map(t => t.id), 0) + 1;
     const newTeam = { ...team, id: newId };
@@ -63,6 +84,7 @@ export class ChampionshipService {
       this.saveChampionshipsToLocalStorage();
     }
   }
+
   private saveChampionshipsToLocalStorage(): void {
     localStorage.setItem('championships', JSON.stringify(this.championships));
   }
@@ -81,16 +103,40 @@ export class ChampionshipService {
   
     if (storedChamps) {
       const champs: Championship[] = JSON.parse(storedChamps);
-      // Mivel team-ek referenciák, újra be kell őket állítani:
-      this.championships = champs.map(ch => ({
-        ...ch,
-        teams: ch.teams.map(t => this.teams.find(team => team.id === t.id)!).filter(Boolean),
-        matches: ch.matches.map(m => ({
-          ...m,
-          team1: this.teams.find(t => t.id === m.team1.id)!, // feltételezve, hogy Match.team1 és team2 is Team típusú
-          team2: this.teams.find(t => t.id === m.team2.id)!
-        }))
-      }));
+  
+      this.championships = champs.map(ch => {
+        const reconstructedTeams = ch.teams
+          .map(t => this.teams.find(team => team.id === t.id))
+          .filter((t): t is Team => !!t); // Csak létező csapatokat használunk
+  
+        const reconstructedMatchdays = ch.matchdays.map((md: Matchday) => {
+          const reconstructedMatches = md.matches.map((m: Match) => {
+            const team1 = this.teams.find(t => t.id === m.team1.id);
+            const team2 = this.teams.find(t => t.id === m.team2.id);
+  
+            if (!team1 || !team2) {
+              console.warn('Nem található csapat a meccsnél', m);
+            }
+  
+            return {
+              ...m,
+              team1: team1 ?? m.team1,
+              team2: team2 ?? m.team2
+            };
+          });
+  
+          return {
+            ...md,
+            matches: reconstructedMatches
+          };
+        });
+  
+        return {
+          ...ch,
+          teams: reconstructedTeams,
+          matchdays: reconstructedMatchdays
+        };
+      });
     }
-  }
+  }  
 }

@@ -1,80 +1,68 @@
-<mat-card class="container" style="margin: 20px;">
-    <mat-form-field appearance="fill">
-        <mat-label>Bajnokságok</mat-label>
-        <mat-select (selectionChange)="selectChampionship($event.value)">
-            <mat-option *ngFor="let championship of championships" [value]="championship">
-                {{ championship.name }}
+<mat-toolbar color="primary">
+    <span>Bajnokságok</span>
+  </mat-toolbar>
+  
+  <div class="container" style="margin: 20px;">
+    <!-- Bajnokságok listája -->
+    <mat-card>
+      <mat-card-title>Bajnokságok</mat-card-title>
+      <mat-list>
+        <mat-list-item *ngFor="let champ of championships" (click)="selectChampionship(champ)" style="cursor: pointer;">
+          {{ champ.name }}
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  
+    <!-- Kiválasztott bajnokság meccsnappjainak és mérkőzéseinek megjelenítése -->
+    <div *ngIf="selectedChampionship" style="margin-top: 20px;">
+      <mat-card>
+        <mat-card-title>{{ selectedChampionship.name }}</mat-card-title>
+        <mat-form-field appearance="fill" style="width: 100%;">
+          <mat-label>Válaszd ki a meccsnapt</mat-label>
+          <mat-select [(ngModel)]="selectedMatchday" (selectionChange)="onMatchdayChange($event.value)">
+            <mat-option *ngFor="let md of selectedChampionship.matchdays" [value]="md">
+              {{ md.date | date:'longDate' }}
             </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-
-    <div *ngIf="selectedChampionship">
-        <mat-card style="margin-top: 20px;">
-            <mat-card-title>{{ selectedChampionship.name }}</mat-card-title>
-            <br>
-            <mat-card-content>
-                <mat-card>
-                    <h4>Csapatok</h4>
-                    <table mat-table [dataSource]="selectedChampionship.teams | pontokPipe: 'points'"
-                        class="mat-elevation-z8">
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef> Név </th>
-                            <td mat-cell *matCellDef="let team"> {{ team.name }} </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="points">
-                            <th mat-header-cell *matHeaderCellDef> Pontok </th>
-                            <td mat-cell *matCellDef="let team"> {{ team.points }} </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="['name', 'points']"></tr>
-                        <tr mat-row *matRowDef="let row; columns: ['name', 'points'];"></tr>
-                    </table>
-                </mat-card>
-                <br>
-                <mat-card>
-                    <h4>Mérkőzések</h4>
-                    <table mat-table [dataSource]="selectedChampionship.matches| sortByDate" class="mat-elevation-z8">
-
-                        <!-- A csapat oszlop -->
-                        <ng-container matColumnDef="team1">
-                            <th mat-header-cell *matHeaderCellDef> A csapat </th>
-                            <td mat-cell *matCellDef="let match"> {{ match.team1?.name }} </td>
-                        </ng-container>
-
-                        <!-- vs vagy eredmény oszlop -->
-                        <ng-container matColumnDef="result">
-                            <th mat-header-cell *matHeaderCellDef> vs / Eredmény </th>
-                            <td mat-cell *matCellDef="let match">
-                                <ng-container *ngIf="match.score1 !== null && match.score2 !== null; else vsText">
-                                    {{ match.score1 }} - {{ match.score2 }}
-                                </ng-container>
-                                <ng-template #vsText> vs </ng-template>
-                            </td>
-                        </ng-container>
-
-                        <!-- B csapat oszlop -->
-                        <ng-container matColumnDef="team2">
-                            <th mat-header-cell *matHeaderCellDef> B csapat </th>
-                            <td mat-cell *matCellDef="let match"> {{ match.team2?.name }} </td>
-                        </ng-container>
-
-                        <!-- Dátum oszlop -->
-                        <ng-container matColumnDef="date">
-                            <th mat-header-cell *matHeaderCellDef> Dátum </th>
-                            <td mat-cell *matCellDef="let match"> {{ match.date }} </td>
-                        </ng-container>
-
-                        <!-- Fejléc és sorok -->
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-                    </table>
-
-
-                </mat-card>
-            </mat-card-content>
-        </mat-card>
+          </mat-select>
+        </mat-form-field>
+  
+        <!-- Mérkőzések táblázata -->
+        <mat-table [dataSource]="displayedMatches" style="width: 100%; margin-top: 20px;">
+          <!-- Csapat 1 oszlop -->
+          <ng-container matColumnDef="team1">
+            <mat-header-cell *matHeaderCellDef>Csapat 1</mat-header-cell>
+            <mat-cell *matCellDef="let match"> {{ match.team1.name }} </mat-cell>
+          </ng-container>
+  
+          <!-- Eredmény oszlop -->
+          <ng-container matColumnDef="result">
+            <mat-header-cell *matHeaderCellDef>Eredmény</mat-header-cell>
+            <mat-cell *matCellDef="let match">
+              <span *ngIf="match.score1 !== null && match.score2 !== null">
+                {{ match.score1 }} : {{ match.score2 }}
+              </span>
+              <span *ngIf="match.score1 === null || match.score2 === null">
+                -
+              </span>
+            </mat-cell>
+          </ng-container>
+  
+          <!-- Csapat 2 oszlop -->
+          <ng-container matColumnDef="team2">
+            <mat-header-cell *matHeaderCellDef>Csapat 2</mat-header-cell>
+            <mat-cell *matCellDef="let match"> {{ match.team2.name }} </mat-cell>
+          </ng-container>
+  
+          <!-- Dátum oszlop -->
+          <ng-container matColumnDef="date">
+            <mat-header-cell *matHeaderCellDef>Dátum</mat-header-cell>
+            <mat-cell *matCellDef="let match"> {{ match.date | date:'shortDate' }} </mat-cell>
+          </ng-container>
+  
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </mat-card>
     </div>
-</mat-card>
+  </div>
+  
