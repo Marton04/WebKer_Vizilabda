@@ -66,6 +66,11 @@ export class EnterResultsComponent implements OnInit {
  
   saveResults() {
     if (!this.selectedMatchday) return;
+    if (this.displayedMatches.some(m => m.score1! < 0 || m.score2! < 0)) {
+      alert('Az eredmények nem lehetnek negatívak!');
+      return;
+    }
+    
   
     this.selectedMatchday.matches.forEach(match => {
       const team1 = match.team1;

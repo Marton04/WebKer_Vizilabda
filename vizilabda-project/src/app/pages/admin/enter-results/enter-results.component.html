@@ -31,11 +31,11 @@
       
           <div class="scores">
             <mat-form-field appearance="outline" class="score-input">
-              <input matInput type="number" [(ngModel)]="match.score1" placeholder="Hazai">
+              <input matInput type="number" [(ngModel)]="match.score1" placeholder="Hazai" min="0">
             </mat-form-field>
             <mat-form-field appearance="outline" class="score-input">
-              <input matInput type="number" [(ngModel)]="match.score2" placeholder="Vendég">
-            </mat-form-field>
+              <input matInput type="number" [(ngModel)]="match.score2" placeholder="Vendég" min="0">
+            </mat-form-field>            
           </div>
         </div>
 
