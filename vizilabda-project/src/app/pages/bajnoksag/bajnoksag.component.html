@@ -3,7 +3,6 @@
 </mat-toolbar>
 
 <div class="container">
-  <!-- Bajnokságok listája -->
   <mat-card class="championship-list">
     <mat-card-title>Bajnokságok</mat-card-title>
     <mat-list>
@@ -12,8 +11,6 @@
       </mat-list-item>
     </mat-list>
   </mat-card>
-
-  <!-- Kiválasztott bajnokság meccsnappjai -->
   <div *ngIf="selectedChampionship" class="selected-section">
     <mat-card>
       <mat-card-title>{{ selectedChampionship.name }}</mat-card-title>
@@ -27,7 +24,6 @@
         </mat-select>
       </mat-form-field>
 
-      <!-- Mérkőzések -->
       <mat-card class="match-table-card">
         <mat-card-title>Mérkőzések</mat-card-title>
         <mat-table [dataSource]="displayedMatches" class="mat-elevation-z2">
@@ -61,7 +57,6 @@
         </mat-table>
       </mat-card>
 
-      <!-- Csapatok -->
       <mat-card class="team-table-card">
         <mat-card-title>Tabella</mat-card-title>
         <mat-table [dataSource]="selectedChampionship.teams | pontokPipe:'points'" class="mat-elevation-z2">

@@ -34,7 +34,7 @@ export class ChampionshipService {
     if (storedChamps) {
       const champs: Championship[] = JSON.parse(storedChamps);
       this.championships = champs.map(ch => {
-        const reconstructedTeams = ch.teams;  // Csapatok közvetlenül a bajnokságokból
+        const reconstructedTeams = ch.teams;
         const reconstructedMatchdays = ch.matchdays.map((md: Matchday) => {
           const reconstructedMatches = md.matches.map((m: Match) => {
             return {
