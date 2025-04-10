@@ -24,7 +24,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  password = new FormControl('');
+  password = new FormControl('testpw');
   isLoading: boolean = false;
   loginError: string = '';
   showLoginForm: boolean = true;

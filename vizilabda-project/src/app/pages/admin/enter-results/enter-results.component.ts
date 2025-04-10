@@ -103,7 +103,7 @@ export class EnterResultsComponent implements OnInit {
         team1.points += 1;
         team2.points += 1;
       }
-      console.log(team1.points+" : "+team2.points);
+      //console.log(team1.points+" : "+team2.points);
   
       // Frissítsük az elmentett eredményt
       this.originalScores.set(match, { score1: match.score1, score2: match.score2 });

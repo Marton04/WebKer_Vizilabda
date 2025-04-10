@@ -4,7 +4,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NewChampionshipComponent}from './new-championship/new-championship.component' ;
 import { EnterResultsComponent } from './enter-results/enter-results.component';
-import { EditTeamComponent } from './edit-team/edit-team.component';
 
 @Component({
   selector: 'app-admin',
@@ -13,8 +12,7 @@ import { EditTeamComponent } from './edit-team/edit-team.component';
     MatCardModule,
     MatTabsModule,
     NewChampionshipComponent,
-    EnterResultsComponent,
-    EditTeamComponent
+    EnterResultsComponent
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss'

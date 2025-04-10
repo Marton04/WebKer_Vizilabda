@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/vizilabda-project",
+    "public": "dist/vizilabda-project/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
