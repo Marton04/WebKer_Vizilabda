@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Championship, Team, Match, Matchday } from '../models/championship.model';
+import { Firestore, collection,collectionData, doc, addDoc, updateDoc, deleteDoc, getDocs, query, orderBy, getDoc, where } from '@angular/fire/firestore';
+import { Observable, from, switchMap, map, of, take, firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,14 +9,14 @@ import { Championship, Team, Match, Matchday } from '../models/championship.mode
 export class ChampionshipService {
   private championships: Championship[] = [];
 
-  constructor() {
-    this.loadFromLocalStorage();
-  }
+  constructor(private firestore: Firestore) {}
 
-  getChampionships(): Championship[] {
-    return this.championships;
+ getChampionships(): Observable<Championship[]> {
+    const champRef = collection(this.firestore, 'Championships');
+    return collectionData(champRef, { idField: 'id' }).pipe(
+      map((data) => data.map(item => item as Championship))
+    );
   }
-
   addChampionship(championship: Championship): void {
     this.championships.push(championship);
     this.saveChampionshipsToLocalStorage();
