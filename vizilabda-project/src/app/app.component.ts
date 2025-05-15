@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './shared/menu/menu.component';
+import { AuthService } from './services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -24,19 +26,26 @@ import { MenuComponent } from './shared/menu/menu.component';
 export class AppComponent {
   title = 'vizilabda-project';
   isLoggedIn = false;
+  private authSubscription?: Subscription;
+
+  constructor(private authService: AuthService) {}
+
   ngOnInit(): void {
-    this.checkLoginStatus();
+    this.authSubscription = this.authService.currentUser.subscribe(user => {
+      this.isLoggedIn = !!user;
+      localStorage.setItem('isLoggedIn', this.isLoggedIn ? 'true' : 'false');
+    });
   }
 
-  checkLoginStatus(): void {
-    this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  ngOnDestroy(): void {
+    this.authSubscription?.unsubscribe();
   }
+
+  logout(): void {
+    this.authService.signOut();
+  }
+
   onToggleSidenav(sidenav: MatSidenav){
     sidenav.toggle();
-  }
-  logout(): void {
-    localStorage.setItem('isLoggedIn', 'false');
-    this.isLoggedIn = false;
-    window.location.href = '/home';
   }
 }
