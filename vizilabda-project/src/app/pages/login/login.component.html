@@ -10,7 +10,12 @@
     }
   
     @if (showLoginForm) {
-      <form (ngSubmit)="check()" class="login-form">
+      <form (ngSubmit)="login()" class="login-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" [formControl]="email">
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
   
         <mat-form-field appearance="outline">
           <mat-label>Password</mat-label>
@@ -25,6 +30,7 @@
         }
     
         <button mat-flat-button color="primary" type="submit">Login</button>
+        <button mat-flat-button [routerLink]="['/signup']">Register</button>
       </form>
     }
   </div>
