@@ -19,6 +19,7 @@ export interface Matchday {
 }
 
 export interface Championship {
+  id?: string;
   name: string;
   teams: Team[];
   matchdays: Matchday[];

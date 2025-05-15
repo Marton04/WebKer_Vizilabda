@@ -17,47 +17,23 @@ export class ChampionshipService {
       map((data) => data.map(item => item as Championship))
     );
   }
-  addChampionship(championship: Championship): void {
-    this.championships.push(championship);
-    this.saveChampionshipsToLocalStorage();
-  }
+  addChampionship(championship: Championship): Promise<void> {
+  const champRef = collection(this.firestore, 'Championships');
+  return addDoc(champRef, championship).then(() => {
+    console.log('Bajnokság mentve Firebase-be');
+  }).catch(error => {
+    console.error('Hiba a bajnokság mentésénél:', error);
+  });
+}
 
-  saveAll(): void {
-    this.saveChampionshipsToLocalStorage();
-  }
+  updateChampionship(championshipId: string, updatedData: Partial<Championship>): Promise<void> {
+  const champDocRef = doc(this.firestore, 'Championships', championshipId);
+  return updateDoc(champDocRef, updatedData);
+}
 
   private saveChampionshipsToLocalStorage(): void {
     localStorage.setItem('championships', JSON.stringify(this.championships));
   }
 
-  private loadFromLocalStorage(): void {
-    const storedChamps = localStorage.getItem('championships');
-  
-    if (storedChamps) {
-      const champs: Championship[] = JSON.parse(storedChamps);
-      this.championships = champs.map(ch => {
-        const reconstructedTeams = ch.teams;
-        const reconstructedMatchdays = ch.matchdays.map((md: Matchday) => {
-          const reconstructedMatches = md.matches.map((m: Match) => {
-            return {
-              ...m,
-              team1: m.team1,
-              team2: m.team2
-            };
-          });
-  
-          return {
-            ...md,
-            matches: reconstructedMatches
-          };
-        });
-  
-        return {
-          ...ch,
-          teams: reconstructedTeams,
-          matchdays: reconstructedMatchdays
-        };
-      });
-    }
-  }  
+ 
 }

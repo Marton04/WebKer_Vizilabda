@@ -50,6 +50,7 @@ export class BajnoksagComponent implements OnInit, OnDestroy {
     const sub = this.championshipService.getChampionships().subscribe({
       next: (data: Championship[]) => {
         this.championships = data;
+        console.log('Bajnokságok betöltve:', this.championships);
       },
       error: (err) => {
         console.error('Hiba a bajnokságok betöltésekor:', err);

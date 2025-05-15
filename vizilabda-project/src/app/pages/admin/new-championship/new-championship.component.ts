@@ -37,16 +37,18 @@ export class NewChampionshipComponent {
   constructor(
     private fb: FormBuilder,
     private championshipService: ChampionshipService
+    
   ) {
     this.championshipForm = this.fb.group({
       name: ['', Validators.required],
       startDate: ['', Validators.required]
     });
   }
+private teamIdCounter = 1;
 
-  addNewTeam() {
-    this.newTeams.push({ id: 0, name: '', points: 0 });
-  }
+addNewTeam() {
+  this.newTeams.push({ id: this.teamIdCounter++, name: '', points: 0 });
+}
 
   removeNewTeam(index: number) {
     this.newTeams.splice(index, 1);
@@ -82,12 +84,12 @@ export class NewChampionshipComponent {
       matchdays
     };
   
-    this.championshipService.addChampionship(newChampionship);
-    alert('Bajnokság létrehozva!');
-  
-    this.championshipForm.reset();
-    this.newTeams = [];
-    this.startDate = null;
+    this.championshipService.addChampionship(newChampionship).then(() => {
+  alert('Bajnokság létrehozva!');
+  this.championshipForm.reset();
+  this.newTeams = [];
+  this.startDate = null;
+});
   }
 
   private generateDoubleRoundRobinSchedule(teams: Team[], startDate: Date): Matchday[] {

@@ -31,8 +31,10 @@ export class EnterResultsComponent implements OnInit {
   constructor(private championshipService: ChampionshipService) {}
 
   ngOnInit(): void {
-    this.championships = this.championshipService.getChampionships();
-  }
+  this.championshipService.getChampionships().subscribe(champs => {
+    this.championships = champs;
+  });
+}
 
   selectChampionship(championship: Championship) {
     this.selectedChampionship = championship;
@@ -64,54 +66,65 @@ export class EnterResultsComponent implements OnInit {
   }
  
   saveResults() {
-    if (!this.selectedMatchday) return;
-    if (this.displayedMatches.some(m => m.score1! < 0 || m.score2! < 0)) {
-      alert('Az eredmények nem lehetnek negatívak!');
+  if (!this.selectedMatchday) return;
+
+  if (this.displayedMatches.some(m => m.score1! < 0 || m.score2! < 0)) {
+    alert('Az eredmények nem lehetnek negatívak!');
+    return;
+  }
+
+  this.selectedMatchday.matches.forEach(match => {
+    const team1 = this.selectedChampionship!.teams.find(t => t.id === match.team1.id);
+    const team2 = this.selectedChampionship!.teams.find(t => t.id === match.team2.id);
+
+    if (!team1 || !team2 || match.score1 == null || match.score2 == null) {
+      match.score1 = null;
+      match.score2 = null;
       return;
     }
-    
-  
-    this.selectedMatchday.matches.forEach(match => {
-      const team1 = match.team1;
-      const team2 = match.team2;
-  
-      if (!team1 || !team2 || match.score1 == null || match.score2 == null){
-        match.score1=null
-        match.score2=null
-        return;
-      } 
-  
-      if (team1.points == null) team1.points = 0;
-      if (team2.points == null) team2.points = 0;
 
-      const original = this.originalScores.get(match);
-      if (original) {
-        const { score1: orig1, score2: orig2 } = original;
-        if (orig1 > orig2) {
-          team1.points -= 3;
-        } else if (orig2 > orig1) {
-          team2.points -= 3;
-        } else {
-          team1.points -= 1;
-          team2.points -= 1;
-        }
-      }
-      
-      if (match.score1 > match.score2) {
-        team1.points += 3;
-      } else if (match.score2 > match.score1) {
-        team2.points += 3;
+    if (team1.points == null) team1.points = 0;
+    if (team2.points == null) team2.points = 0;
+
+    const original = this.originalScores.get(match);
+    if (original) {
+      const { score1: orig1, score2: orig2 } = original;
+      if (orig1 > orig2) {
+        team1.points -= 3;
+      } else if (orig2 > orig1) {
+        team2.points -= 3;
       } else {
-        team1.points += 1;
-        team2.points += 1;
+        team1.points -= 1;
+        team2.points -= 1;
       }
-      //console.log(team1.points+" : "+team2.points);
-      this.originalScores.set(match, { score1: match.score1, score2: match.score2 });
+    }
+
+    if (match.score1 > match.score2) {
+      team1.points += 3;
+    } else if (match.score2 > match.score1) {
+      team2.points += 3;
+    } else {
+      team1.points += 1;
+      team2.points += 1;
+    }
+
+    this.originalScores.set(match, { score1: match.score1, score2: match.score2 });
+  });
+
+  if (this.selectedChampionship && this.selectedChampionship.id) {
+    this.championshipService.updateChampionship(
+      this.selectedChampionship.id,
+      {
+        matchdays: this.selectedChampionship.matchdays,
+        teams: this.selectedChampionship.teams
+      }
+    ).then(() => {
+      alert('Eredmények mentve, pontok frissítve!');
+    }).catch(err => {
+      console.error('Mentési hiba:', err);
     });
-  
-    this.championshipService.saveAll();
-    alert('Eredmények mentve, pontok frissítve!');
   }
+}
   
   
   
