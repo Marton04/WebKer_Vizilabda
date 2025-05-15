@@ -60,7 +60,7 @@ export class EnterResultsComponent implements OnInit {
         });
       }
     });
-    console.log(this.originalScores);
+    //console.log(this.originalScores);
   }
  
   saveResults() {
