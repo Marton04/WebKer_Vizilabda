@@ -30,10 +30,22 @@ export class ChampionshipService {
   const champDocRef = doc(this.firestore, 'Championships', championshipId);
   return updateDoc(champDocRef, updatedData);
 }
-
-  private saveChampionshipsToLocalStorage(): void {
-    localStorage.setItem('championships', JSON.stringify(this.championships));
+  deleteChampionship(championshipId: string): Promise<void> {
+    const champDocRef = doc(this.firestore, 'Championships', championshipId);
+    return deleteDoc(champDocRef);
   }
 
+  getChampionshipById(championshipId: string): Observable<Championship | undefined> {
+    const champDocRef = doc(this.firestore, 'Championships', championshipId);
+    return from(getDoc(champDocRef)).pipe(
+      map(doc => doc.exists() ? { id: doc.id, ...doc.data() } as Championship : undefined)
+    );
+  }
+
+  getChampionshipsByUser(uid: string): Observable<Championship[]> {
+    const collRef = collection(this.firestore, 'Championships');
+    const q = query(collRef, where('createdBy', '==', uid));
+    return collectionData(q, { idField: 'id' }) as Observable<Championship[]>;
+  }
  
 }

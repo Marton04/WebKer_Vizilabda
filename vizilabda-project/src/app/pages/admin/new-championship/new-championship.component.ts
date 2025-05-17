@@ -11,6 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../services/auth.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-new-championship',
@@ -36,8 +38,8 @@ export class NewChampionshipComponent {
 
   constructor(
     private fb: FormBuilder,
-    private championshipService: ChampionshipService
-    
+    private championshipService: ChampionshipService,
+    private authService: AuthService
   ) {
     this.championshipForm = this.fb.group({
       name: ['', Validators.required],
@@ -77,12 +79,18 @@ addNewTeam() {
     }
   
     const matchdays: Matchday[] = this.generateDoubleRoundRobinSchedule([...this.newTeams], this.startDate!);
-  
+  const uid = this.authService.getCurrentUserId();
+  if (!uid) {
+    alert('Nem vagy bejelentkezve, a bajnokságot nem lehet menteni.');
+    return;
+  }
+
     const newChampionship: Championship = {
-      name,
-      teams: [...this.newTeams],
-      matchdays
-    };
+        name,
+        teams: [...this.newTeams],
+        matchdays,
+        createdBy: uid 
+      };
   
     this.championshipService.addChampionship(newChampionship).then(() => {
   alert('Bajnokság létrehozva!');

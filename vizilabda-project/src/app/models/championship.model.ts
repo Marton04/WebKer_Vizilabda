@@ -23,4 +23,5 @@ export interface Championship {
   name: string;
   teams: Team[];
   matchdays: Matchday[];
+  createdBy: string;
 }

@@ -2,13 +2,19 @@
     <mat-card-title>Eredmények megadása</mat-card-title>
   
     <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
-      <mat-label>Bajnokság kiválasztása</mat-label>
-      <mat-select [(ngModel)]="selectedChampionship" (selectionChange)="selectChampionship($event.value)">
-        <mat-option *ngFor="let champ of championships" [value]="champ">
-          {{ champ.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <mat-label>Bajnokság kiválasztása</mat-label>
+  <mat-select [(ngModel)]="selectedChampionship" (selectionChange)="selectChampionship($event.value)">
+    <mat-option *ngFor="let champ of championships" [value]="champ">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>{{ champ.name }}</span>
+        <button mat-icon-button color="warn" (click)="deleteChampionship(champ); $event.stopPropagation();" matTooltip="Törlés">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
   
     <div *ngIf="selectedChampionship">
       <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
