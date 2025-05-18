@@ -89,9 +89,10 @@ addNewTeam() {
         name,
         teams: [...this.newTeams],
         matchdays,
-        createdBy: uid 
+        createdBy: uid ,
+        teamCount: this.newTeams.length,
+        startDate: matchdays?.[0]?.date || new Date().toISOString()
       };
-  
     this.championshipService.addChampionship(newChampionship).then(() => {
   alert('Bajnokság létrehozva!');
   this.championshipForm.reset();

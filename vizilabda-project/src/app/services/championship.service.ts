@@ -48,4 +48,31 @@ export class ChampionshipService {
     return collectionData(q, { idField: 'id' }) as Observable<Championship[]>;
   }
  
+  getChampionshipsByTeamCountQuery(minTeams: number): Observable<Championship[]> {
+  const champRef = collection(this.firestore, 'Championships');
+  const q = query(champRef, where('teamCount', '>=', minTeams));
+  return collectionData(q, { idField: 'id' }).pipe(
+    map(data => data as Championship[])
+  );}
+  getChampionshipsOrderedByDate(): Observable<Championship[]> {
+  const champRef = collection(this.firestore, 'Championships');
+  const q = query(champRef, orderBy('startDate', 'desc'));
+  return collectionData(q, { idField: 'id' }).pipe(
+    map(data => data as Championship[])
+  );
+}
+
+getChampionshipsByDateAndMinTeams(minTeams: number): Observable<Championship[]> {
+  const champRef = collection(this.firestore, 'Championships');
+  const q = query(
+    champRef,
+    where('teamCount', '>=', minTeams),
+    orderBy('teamCount'),
+    orderBy('startDate', 'desc')
+  );
+  return collectionData(q, { idField: 'id' }).pipe(
+    map(data => data as Championship[])
+  );
+}
+
 }

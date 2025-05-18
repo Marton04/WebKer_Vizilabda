@@ -7,11 +7,12 @@ import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+
 import { PontokPipePipe } from '../../shared/pontok.pipe.pipe';
-import { SortByDatePipe } from '../../shared/sort-by-date.pipe';
 import { ChampionshipService } from '../../services/championship.service';
 import { Championship, Matchday } from '../../models/championship.model';
-import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -27,7 +28,8 @@ import { Subscription } from 'rxjs';
     CommonModule,
     MatTableModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    MatInputModule
   ],
   templateUrl: './bajnoksag.component.html',
   styleUrls: ['./bajnoksag.component.scss']
@@ -38,6 +40,8 @@ export class BajnoksagComponent implements OnInit, OnDestroy {
   selectedMatchday: Matchday | null = null;
   displayedColumns: string[] = ['team1', 'result', 'team2', 'date'];
   teamColumns: string[] = ['position', 'name', 'points'];
+  filterMode: string = 'none';
+minTeams: number = 0;
   private subscriptions: Subscription[] = [];
 
   constructor(private championshipService: ChampionshipService) {}
@@ -47,16 +51,15 @@ export class BajnoksagComponent implements OnInit, OnDestroy {
   }
 
   loadChampionships(): void {
-    const sub = this.championshipService.getChampionships().subscribe({
-      next: (data: Championship[]) => {
-        this.championships = data;
-        console.log('Bajnokságok betöltve:', this.championships);
-      },
-      error: (err) => {
-        console.error('Hiba a bajnokságok betöltésekor:', err);
-      }
-    });
-    this.subscriptions.push(sub);
+    if (this.filterMode === 'none') {
+    this.championshipService.getChampionships().subscribe(data => this.championships = data);
+  } else if (this.filterMode === 'date') {
+    this.championshipService.getChampionshipsOrderedByDate().subscribe(data => this.championships = data);
+  } else if (this.filterMode === 'minTeams') {
+    this.championshipService.getChampionshipsByTeamCountQuery(this.minTeams).subscribe(data => this.championships = data);
+  } else if (this.filterMode === 'both') {
+    this.championshipService.getChampionshipsByDateAndMinTeams(this.minTeams).subscribe(data => this.championships = data);
+  }
   }
 
   selectChampionship(championship: Championship): void {
